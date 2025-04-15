@@ -32,7 +32,7 @@ Para ambos métodos, necesitarás instalar al menos un módulo de datos de sonid
 ## Módulos de voz
 Para que VoiceOver funcione, necesitas al menos un módulo de datos con archivos de audio. El módulo principal es:
 
-- **VoiceOver Data - Vanilla**: Contiene las voces para el contenido de Vanilla WoW
+- **VoiceOver Data - Turtle**: Contiene las voces para el contenido de Vanilla WoW. Descarga la versión v0.1 aquí: https://github.com/Alukarho/AI_VoiceOver/releases/tag/v0.1
 
 **Actualización de la carpeta de módulos**: Para asegurarte de tener los scripts de módulos actualizados, debes instalar el repositorio [https://github.com/Alukarho/AI_VoiceOverData_Turtle](https://github.com/Alukarho/AI_VoiceOverData_Turtle). Esto actualizará los scripts de módulos, pero no incluye los archivos de audio ni los altera.
 
