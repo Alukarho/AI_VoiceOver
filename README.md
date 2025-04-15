@@ -55,7 +55,8 @@ Para que VoiceOver funcione, necesitas al menos un módulo de datos con archivos
 - **Detener audio al desconectar**: Detiene la reproducción cuando cierras un diálogo
 
 ## Contribuciones
-Este addon fue desarrollado específicamente para el servidor Turtle WoW Sudamérica. Si encuentras algún error o tienes sugerencias, por favor repórtalas en mi Discord.
+- Este addon fue desarrollado específicamente para el servidor Turtle WoW Sudamérica. Si encuentras algún error o tienes sugerencias, por favor repórtalas en mi Discord.
+- Si quieres apoyar el proyecto, considera suscribirte a nuestro Patreon: **https://www.patreon.com/NeoAuras**. También estamos desarrollando el addon en otros idiomas.
 
 ## Créditos
 - **Desarrollado por**: Darkneo
@@ -64,5 +65,5 @@ Este addon fue desarrollado específicamente para el servidor Turtle WoW Sudamé
 
 ---
 
-Para más información, únete a nuestro Discord: **https://discord.gg/jHPsF2dt9y**
-Servidor Turtle WoW Sudamérica: **https://sa.turtle-wow.org/** 
+- Para más información, únete a nuestro Discord: **https://discord.gg/jHPsF2dt9y**
+- Servidor Turtle WoW Sudamérica: **https://sa.turtle-wow.org/** 
