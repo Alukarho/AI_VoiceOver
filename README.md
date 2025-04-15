@@ -19,7 +19,7 @@ VoiceOver es un addon desarrollado específicamente para el servidor Turtle WoW 
 1. Abre el lanzador oficial de Turtle WoW
 2. Ve a la sección de Addons
 3. Haz clic en "Agregar Addon"
-4. Pega la URL de este repositorio: `https://github.com/Alukarho/AI_VoiceOver`
+4. Pega la URL de este repositorio: [https://github.com/Alukarho/AI_VoiceOver](https://github.com/Alukarho/AI_VoiceOver)
 5. Haz clic en "Instalar"
 
 ### Método 2: Instalación manual
@@ -34,7 +34,7 @@ Para que VoiceOver funcione, necesitas al menos un módulo de datos con archivos
 
 - **VoiceOver Data - Vanilla**: Contiene las voces para el contenido de Vanilla WoW
 
-**Actualización de la carpeta de módulos**: Para asegurarte de tener los scripts de módulos actualizados, debes instalar el repositorio `https://github.com/Alukarho/AI_VoiceOverData_Turtle`. Esto actualizará los scripts de módulos, pero no incluye los archivos de audio ni los altera.
+**Actualización de la carpeta de módulos**: Para asegurarte de tener los scripts de módulos actualizados, debes instalar el repositorio [https://github.com/Alukarho/AI_VoiceOverData_Turtle](https://github.com/Alukarho/AI_VoiceOverData_Turtle). Esto actualizará los scripts de módulos, pero no incluye los archivos de audio ni los altera.
 
 ## Comandos
 
@@ -58,7 +58,7 @@ Para que VoiceOver funcione, necesitas al menos un módulo de datos con archivos
 
 ## Contribuciones
 - Este addon fue desarrollado específicamente para el servidor Turtle WoW Sudamérica. Si encuentras algún error o tienes sugerencias, por favor repórtalas en mi Discord.
-- Si quieres apoyar el proyecto, considera suscribirte a nuestro Patreon: **https://www.patreon.com/NeoAuras**. También estamos desarrollando el addon en otros idiomas.
+- Si quieres apoyar el proyecto, considera suscribirte a nuestro Patreon: [https://www.patreon.com/NeoAuras](https://www.patreon.com/NeoAuras). También estamos desarrollando el addon en otros idiomas.
 
 ## Créditos
 - **Desarrollado por**: Darkneo
@@ -67,5 +67,5 @@ Para que VoiceOver funcione, necesitas al menos un módulo de datos con archivos
 
 ---
 
-- Para más información, únete a nuestro Discord: **https://discord.gg/jHPsF2dt9y**
-- Servidor Turtle WoW Sudamérica: **https://sa.turtle-wow.org/** 
+- Para más información, únete a nuestro Discord: [https://discord.gg/jHPsF2dt9y](https://discord.gg/jHPsF2dt9y)
+- Servidor Turtle WoW Sudamérica: [https://sa.turtle-wow.org/](https://sa.turtle-wow.org/)
