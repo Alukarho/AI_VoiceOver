@@ -1,10 +1,7 @@
 # VoiceOver para Turtle WoW Sudamérica
 
-<<<<<<< HEAD
-=======
 <img src="https://github.com/user-attachments/assets/67602693-0ad4-4c8f-b187-58bc1969757c" width="600"/>
 
->>>>>>> 64e20fde644ea8ccb96df18c1f3326621103ead8
 ## Descripción
 VoiceOver es un addon desarrollado específicamente para el servidor Turtle WoW Sudamérica que añade voces a NPCs, diálogos y misiones, enriqueciendo la experiencia de juego a través de respuestas de audio inmersivas.
 
@@ -22,11 +19,7 @@ VoiceOver es un addon desarrollado específicamente para el servidor Turtle WoW 
 1. Abre el lanzador oficial de Turtle WoW
 2. Ve a la sección de Addons
 3. Haz clic en "Agregar Addon"
-<<<<<<< HEAD
 4. Pega la URL de este repositorio: `https://github.com/Alukarho/AI_VoiceOver`
-=======
-4. Pega la URL de este repositorio: `https://github.com/mDarkneo/AI_VoiceOver`
->>>>>>> 64e20fde644ea8ccb96df18c1f3326621103ead8
 5. Haz clic en "Instalar"
 
 ### Método 2: Instalación manual
@@ -65,19 +58,11 @@ Para que VoiceOver funcione, necesitas al menos un módulo de datos con archivos
 Este addon fue desarrollado específicamente para el servidor Turtle WoW Sudamérica. Si encuentras algún error o tienes sugerencias, por favor repórtalas en mi Discord.
 
 ## Créditos
-<<<<<<< HEAD
 - **Desarrollado por**: Darkneo
-=======
-- **Desarrollado por**: mDarkneo
->>>>>>> 64e20fde644ea8ccb96df18c1f3326621103ead8
 - **Voces generadas por**: AI con ajustes específicos para Turtle WoW Sudamérica
 - **Agradecimientos especiales**: A la comunidad de Turtle WoW Sudamérica por su apoyo
 
 ---
 
 Para más información, únete a nuestro Discord: **https://discord.gg/jHPsF2dt9y**
-<<<<<<< HEAD
 Servidor Turtle WoW Sudamérica: **https://sa.turtle-wow.org/** 
-=======
-Servidor Turtle WoW Sudamérica: **https://sa.turtle-wow.org/** 
->>>>>>> 64e20fde644ea8ccb96df18c1f3326621103ead8
