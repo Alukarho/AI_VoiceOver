@@ -31,6 +31,7 @@ function FuzzySearchBestKeys(query, tableVar)
             best_result = {
                 value = value,
                 text = entry,
+                key = entry,  -- Alias para compatibilidad hacia atrás
                 similarity = similarity
             }
         end

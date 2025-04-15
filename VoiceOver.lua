@@ -24,6 +24,7 @@ local defaults = {
             PlayProgressAt50Percent = true,
             PlayTips = true,
             ResetQuestProgressOnReload = true,
+            TipPlayedThisSession = false,
         },
         MinimapButton = {
             LibDBIcon = {}, -- Table used by LibDBIcon to store position (minimapPos), dragging lock (lock) and hidden state (hide)
@@ -84,10 +85,11 @@ function Addon:OnInitialize()
         end
     end
     
-    -- Reiniciar el seguimiento de consejos reproducidos por misión
-    self.db.char.TipsPlayedForQuest = {}
+    -- Ya no reiniciamos TipsPlayedForQuest en cada inicio porque queremos que sea por sesión
+    -- En su lugar, marcamos que no se ha reproducido ningún consejo en esta sesión
+    self.db.profile.Audio.TipPlayedThisSession = false
     if self.db.profile.DebugEnabled then
-        Debug:Print("¡Reiniciado el seguimiento de consejos por misión!", "Tips")
+        Debug:Print("¡Reiniciado el seguimiento de consejos para esta sesión!", "Tips")
     end
     
     SoundQueueUI:Initialize()
@@ -641,7 +643,7 @@ function Addon:QUEST_LOG_UPDATE()
                 end
                 
                 -- NUEVA LÓGICA: Reproducir consejos para misiones con progreso entre 70-100%
-                if progress >= 70 and not self.db.char.TipsPlayedForQuest[questID] and self.db.profile.Audio.PlayTips then
+                if progress >= 70 and not self.db.profile.Audio.TipPlayedThisSession and self.db.profile.Audio.PlayTips then
                     if progress > lastProgress or lastProgress < 70 then
                         -- Reproducir consejo si el progreso aumentó o si acaba de pasar el umbral del 70%
                         if self.db.profile.DebugEnabled then
@@ -650,8 +652,8 @@ function Addon:QUEST_LOG_UPDATE()
                         
                         self:PlayRandomTip()
                         
-                        -- Marcar que ya se reprodujo un consejo para esta misión
-                        self.db.char.TipsPlayedForQuest[questID] = true
+                        -- Marcar que ya se reprodujo un consejo en esta sesión
+                        self.db.profile.Audio.TipPlayedThisSession = true
                     end
                 end
                 
@@ -689,6 +691,7 @@ function Addon:GetTipFiles()
         table.insert(tipFiles, "tip7.mp3")
         table.insert(tipFiles, "tip8.mp3")
         table.insert(tipFiles, "tip9.mp3")
+        table.insert(tipFiles, "tip10.mp3")
     end
     
     if self.db.profile.DebugEnabled then
@@ -746,13 +749,27 @@ function Addon:PlayRandomTip()
     -- Crear los datos para la cola (usando tipo Tip que se manejará de forma especial)
     local tipPath = "Interface\\AddOns\\AI_VoiceOverData_Turtle\\generated\\sounds\\tips\\" .. selectedTip
     
+    -- Tabla de duraciones para cada archivo de tip
+    local tipDurations = {
+        ["tip1.mp3"] = 5,
+        ["tip2.mp3"] = 7,
+        ["tip3.mp3"] = 5,
+        ["tip4.mp3"] = 7,
+        ["tip5.mp3"] = 7,
+        ["tip6.mp3"] = 9,
+        ["tip7.mp3"] = 10,
+        ["tip8.mp3"] = 9,
+        ["tip9.mp3"] = 12,
+        ["tip10.mp3"] = 6
+    }
+    
     ---@type SoundData
     local soundData = {
         event = Enums.SoundEvent.Tip,
         name = "Consejo VoiceOver",
         title = "Consejo",
         filePath = tipPath,
-        length = 7, -- Duración en segundos
+        length = tipDurations[selectedTip] or 7, -- Usar 7 segundos como valor predeterminado
         addedCallback = function(data)
             if SoundQueueUI and SoundQueueUI.frame and SoundQueueUI.frame.portrait and 
                SoundQueueUI.frame.portrait.book then

@@ -327,25 +327,46 @@ function DataModules:GetQuestID(source, title, npcName, text)
     local cleanedNPCName = replaceDoubleQuotes(npcName)
     local cleanedText = replaceDoubleQuotes(getFirstNWords(text, 15)) ..
         " " .. replaceDoubleQuotes(getLastNWords(text, 15))
-    local text_entries = {}
+    local text_entries_mode3 = {} -- Modo 3: Título → NPC → Texto → ID
+    local text_entries_mode4 = {} -- Modo 4: Título → "Modo4" → Texto → ID
 
     for _, module in self:GetModules() do
         local data = module.QuestIDLookup
-        if data then
+        if data and data[source] and data[source][cleanedTitle] then
             local titleLookup = data[source][cleanedTitle]
-            if titleLookup then
-                if type(titleLookup) == "number" then
-                    return titleLookup
-                else
-                    -- else titleLookup is a table and we need to search it further
-                    local npcLookup = titleLookup[cleanedNPCName]
-                    if npcLookup then
-                        if type(npcLookup) == "number" then
-                            return npcLookup
-                        else
-                            for text, ID in pairs(npcLookup) do
-                                text_entries[text] = text_entries[text] or
-                                    ID -- Respect module priority, don't overwrite the entry if there is already one
+            
+            -- Verificar Modo 4: Título → "Modo4" → Texto → ID (más preciso)
+            if type(titleLookup) == "table" and titleLookup["Modo4"] and type(titleLookup["Modo4"]) == "table" then
+                -- Hemos encontrado una estructura de Modo4 explícita
+                for textKey, ID in pairs(titleLookup["Modo4"]) do
+                    text_entries_mode4[textKey] = text_entries_mode4[textKey] or ID -- Respetamos prioridad
+                end
+            end
+            
+            -- Verificar otros modos (puede coexistir con Modo4 en caso de formato mixto)
+            if type(titleLookup) == "number" then
+                -- Modo 1: Título → ID
+                text_entries_mode3["__mode1_result__"] = text_entries_mode3["__mode1_result__"] or titleLookup
+            elseif type(titleLookup) == "table" then
+                -- Comprobar otros iniciadores (no "Modo4")
+                for key, value in pairs(titleLookup) do
+                    if key ~= "Modo4" then
+                        -- Posible Modo 2: Título → NPC → ID
+                        if key == cleanedNPCName then
+                            if type(value) == "number" then
+                                -- Modo 2 exacto: Título → NPC → ID
+                                text_entries_mode3["__mode2_result__"] = text_entries_mode3["__mode2_result__"] or value
+                            elseif type(value) == "table" then
+                                -- Modo 3: Título → NPC → Texto → ID
+                                for textKey, ID in pairs(value) do
+                                    text_entries_mode3[textKey] = text_entries_mode3[textKey] or ID
+                                end
+                            end
+                        elseif type(value) == "table" then
+                            -- Explorar otras entradas de NPC para Modo 3
+                            for textKey, ID in pairs(value) do
+                                -- Guardar con prioridad más baja (NPCs que no coinciden)
+                                text_entries_mode3["__low_priority_" .. textKey] = text_entries_mode3["__low_priority_" .. textKey] or ID
                             end
                         end
                     end
@@ -354,8 +375,70 @@ function DataModules:GetQuestID(source, title, npcName, text)
         end
     end
 
-    local best_result = FuzzySearchBestKeys(cleanedText, text_entries)
-    return best_result and best_result.value
+    -- Prioridad: Modo 4 > Modo 3 > Modo 2 > Modo 1
+    
+    -- Intentar Modo 4: Título → "Modo4" → Texto → ID (más preciso)
+    if next(text_entries_mode4) then
+        local best_result = FuzzySearchBestKeys(cleanedText, text_entries_mode4)
+        if best_result and best_result.value then
+            if self.db and self.db.profile and self.db.profile.DebugEnabled then
+                Debug:Print(format("Encontrado ID %d para misión '%s' usando Modo 4 (coincidencia con texto)", 
+                    best_result.value, cleanedTitle), "DataModules")
+            end
+            return best_result.value
+        end
+    end
+    
+    -- Intentar Modo 3: Título → NPC → Texto → ID
+    local best_result = FuzzySearchBestKeys(cleanedText, text_entries_mode3)
+    if best_result and best_result.value then
+        -- No considerar claves especiales como parte de la búsqueda difusa de texto
+        if best_result.text ~= "__mode2_result__" and best_result.text ~= "__mode1_result__" and 
+           not string.find(best_result.text, "^__low_priority_") then
+            if self.db and self.db.profile and self.db.profile.DebugEnabled then
+                Debug:Print(format("Encontrado ID %d para misión '%s' usando Modo 3 (NPC + texto)", 
+                    best_result.value, cleanedTitle), "DataModules")
+            end
+            return best_result.value
+        end
+    end
+    
+    -- Intentar Modo 2: Título → NPC → ID
+    if text_entries_mode3["__mode2_result__"] then
+        if self.db and self.db.profile and self.db.profile.DebugEnabled then
+            Debug:Print(format("Encontrado ID %d para misión '%s' usando Modo 2 (NPC exacto)", 
+                text_entries_mode3["__mode2_result__"], cleanedTitle), "DataModules")
+        end
+        return text_entries_mode3["__mode2_result__"]
+    end
+    
+    -- Intentar Modo 1: Título → ID (menos preciso)
+    if text_entries_mode3["__mode1_result__"] then
+        if self.db and self.db.profile and self.db.profile.DebugEnabled then
+            Debug:Print(format("Encontrado ID %d para misión '%s' usando Modo 1 (solo título)", 
+                text_entries_mode3["__mode1_result__"], cleanedTitle), "DataModules")
+        end
+        return text_entries_mode3["__mode1_result__"]
+    end
+    
+    -- Si llegamos aquí, buscar en entradas de baja prioridad (NPC no coincidente)
+    for key, value in pairs(text_entries_mode3) do
+        if string.find(key, "^__low_priority_") then
+            local textKey = string.sub(key, 15) -- Quitar el prefijo "__low_priority_"
+            local lowPriorityEntries = {[textKey] = value}
+            local result = FuzzySearchBestKeys(cleanedText, lowPriorityEntries)
+            if result and result.value then
+                if self.db and self.db.profile and self.db.profile.DebugEnabled then
+                    Debug:Print(format("Encontrado ID %d para misión '%s' usando búsqueda de baja prioridad", 
+                        result.value, cleanedTitle), "DataModules")
+                end
+                return result.value
+            end
+        end
+    end
+    
+    -- No se encontró coincidencia
+    return nil
 end
 
 ---@param questID number
@@ -363,11 +446,33 @@ end
 ---@return number|nil id ID of the quest giver
 function DataModules:GetQuestLogQuestGiverTypeAndID(questID)
     for _, module in self:GetModules() do
+        -- Verificar que el módulo existe
+        if not module then 
+            if self.db and self.db.profile and self.db.profile.DebugEnabled then
+                Debug:Print("Módulo nulo encontrado en GetQuestLogQuestGiverTypeAndID", "DataModules")
+            end
+            return 
+        end
+        
         local data = module.NPCIDLookupByQuestID
         if data then
             local npcID = data[questID]
             if npcID then
-                return Enums.GUID.Creature, npcID
+                -- Verificar si es una tabla con "start" y "end"
+                if type(npcID) == "table" and (npcID["start"] or npcID["end"]) then
+                    -- Usamos el NPC de "end" para audio de progreso y "start" para el resto
+                    local completeQuestID = GetQuestID and GetQuestID() or 0
+                    -- Si estamos completando una misión, usamos el NPC de "end"
+                    if completeQuestID == questID and npcID["end"] then
+                        return Enums.GUID.Creature, npcID["end"]
+                    -- De lo contrario, usamos el NPC de "start"
+                    elseif npcID["start"] then
+                        return Enums.GUID.Creature, npcID["start"]
+                    end
+                else
+                    -- Formato tradicional, solo un ID de NPC
+                    return Enums.GUID.Creature, npcID
+                end
             end
         end
 
